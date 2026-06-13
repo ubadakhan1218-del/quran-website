@@ -1,0 +1,777 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="Quran Audio - Read and listen to the complete Quran with translations">
+	<title>Quran Audio Studio</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Noto+Naskh+Arabic:wght@400;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+	<style>
+		:root {
+			--bg: #f5efe3;
+			--bg-2: #efe3cc;
+			--panel: rgba(255, 255, 255, 0.85);
+			--panel-strong: rgba(255, 255, 255, 0.95);
+			--text: #17212b;
+			--muted: #5e6976;
+			--primary: #0f766e;
+			--primary-2: #0d9488;
+			--accent: #c2410c;
+			--border: rgba(15, 23, 42, 0.12);
+			--shadow: 0 20px 60px rgba(15, 23, 42, 0.12);
+			--radius-xl: 28px;
+		}
+
+		body.theme-dark {
+			--bg: #07131c;
+			--bg-2: #0d2230;
+			--panel: rgba(8, 18, 27, 0.85);
+			--panel-strong: rgba(11, 24, 36, 0.95);
+			--text: #eff6fb;
+			--muted: #9db0bf;
+			--primary: #55d6c2;
+			--primary-2: #2fbba6;
+			--accent: #f59e0b;
+			--border: rgba(148, 163, 184, 0.18);
+			--shadow: 0 26px 70px rgba(0, 0, 0, 0.38);
+		}
+
+		* { box-sizing: border-box; }
+		html { scroll-behavior: smooth; }
+		
+		body {
+			margin: 0;
+			font-family: "Manrope", sans-serif;
+			color: var(--text);
+			background: linear-gradient(140deg, var(--bg), var(--bg-2));
+			min-height: 100vh;
+			overflow-x: hidden;
+		}
+
+		.header {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 1.2rem;
+			background: var(--panel);
+			border: 1px solid var(--border);
+			border-radius: 20px;
+			margin: 1rem;
+			box-shadow: var(--shadow);
+		}
+
+		.header-left {
+			display: flex;
+			align-items: center;
+			gap: 1rem;
+		}
+
+		.logo {
+			width: 3rem;
+			height: 3rem;
+			background: linear-gradient(145deg, var(--primary), var(--primary-2));
+			border-radius: 12px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			color: white;
+			font-weight: 800;
+			font-size: 1.3rem;
+		}
+
+		.logo-text h1 {
+			margin: 0;
+			font-size: 1.2rem;
+		}
+
+		.logo-text p {
+			margin: 0.3rem 0 0;
+			color: var(--muted);
+			font-size: 0.85rem;
+		}
+
+		.header-right {
+			display: flex;
+			gap: 0.6rem;
+		}
+
+		.btn {
+			padding: 0.65rem 1.2rem;
+			border: 1px solid var(--border);
+			background: var(--panel-strong);
+			border-radius: 999px;
+			cursor: pointer;
+			font-weight: 700;
+			transition: all 160ms ease;
+		}
+
+		.btn:hover {
+			transform: translateY(-2px);
+			box-shadow: var(--shadow);
+		}
+
+		.btn-primary {
+			background: linear-gradient(145deg, var(--primary), var(--primary-2));
+			color: white;
+			border-color: transparent;
+		}
+
+		.hero {
+			margin: 1rem;
+			padding: 2rem;
+			background: var(--panel);
+			border: 1px solid var(--border);
+			border-radius: 28px;
+			box-shadow: var(--shadow);
+		}
+
+		.hero h2 {
+			margin: 0;
+			font-size: 2.5rem;
+			line-height: 1.1;
+		}
+
+		.hero-ar {
+			font-family: "Noto Naskh Arabic", serif;
+			font-size: 2rem;
+			direction: rtl;
+			margin-top: 0.5rem;
+		}
+
+		.hero p {
+			margin: 1rem 0 0;
+			color: var(--muted);
+			max-width: 70ch;
+		}
+
+		.hero-btns {
+			display: flex;
+			gap: 1rem;
+			margin-top: 1.5rem;
+			flex-wrap: wrap;
+		}
+
+		.container {
+			display: grid;
+			grid-template-columns: 300px 1fr 280px;
+			gap: 1rem;
+			padding: 0 1rem 1rem;
+		}
+
+		.sidebar {
+			background: var(--panel);
+			border: 1px solid var(--border);
+			border-radius: 20px;
+			padding: 1.2rem;
+			box-shadow: var(--shadow);
+		}
+
+		.sidebar h3 {
+			margin: 0 0 1rem;
+			font-size: 1rem;
+		}
+
+		.input-group {
+			margin-bottom: 1.2rem;
+		}
+
+		.input-group label {
+			display: block;
+			font-size: 0.85rem;
+			color: var(--muted);
+			margin-bottom: 0.5rem;
+			font-weight: 700;
+		}
+
+		.input-group input {
+			width: 100%;
+			padding: 0.8rem 1rem;
+			border: 1px solid var(--border);
+			border-radius: 16px;
+			background: rgba(255, 255, 255, 0.1);
+			font-size: 1rem;
+			outline: none;
+			color: var(--text);
+		}
+
+		.input-group input:focus {
+			box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.2);
+			border-color: var(--primary);
+		}
+
+		.toggle-group {
+			display: flex;
+			flex-direction: column;
+			gap: 0.6rem;
+		}
+
+		.toggle-btn {
+			padding: 0.6rem 1rem;
+			border: 1px solid var(--border);
+			background: rgba(255, 255, 255, 0.05);
+			border-radius: 999px;
+			cursor: pointer;
+			font-weight: 700;
+			font-size: 0.9rem;
+			transition: all 160ms ease;
+			color: var(--text);
+		}
+
+		.toggle-btn.active {
+			background: linear-gradient(145deg, var(--primary), var(--primary-2));
+			border-color: transparent;
+			color: white;
+		}
+
+		.reader {
+			background: var(--panel);
+			border: 1px solid var(--border);
+			border-radius: 28px;
+			padding: 2rem;
+			box-shadow: var(--shadow);
+		}
+
+		.reader-header {
+			margin-bottom: 2rem;
+		}
+
+		.reader-header h2 {
+			margin: 0;
+			font-size: 1.8rem;
+		}
+
+		.reader-header p {
+			margin: 0.5rem 0 0;
+			color: var(--muted);
+		}
+
+		.verse {
+			margin-bottom: 2.5rem;
+			padding: 1.5rem;
+			background: rgba(255, 255, 255, 0.08);
+			border-radius: 20px;
+			border: 1px solid var(--border);
+		}
+
+		.verse-number {
+			display: inline-block;
+			background: rgba(13, 148, 136, 0.15);
+			color: var(--primary);
+			padding: 0.4rem 0.8rem;
+			border-radius: 999px;
+			font-weight: 800;
+			font-size: 0.9rem;
+			margin-bottom: 1rem;
+		}
+
+		.verse-arabic {
+			font-family: "Noto Naskh Arabic", serif;
+			font-size: 1.6rem;
+			line-height: 2;
+			direction: rtl;
+			text-align: right;
+			margin: 1rem 0;
+		}
+
+		.verse-translation {
+			color: var(--muted);
+			line-height: 1.8;
+			margin: 1rem 0;
+			font-size: 0.95rem;
+		}
+
+		.verse-controls {
+			display: flex;
+			gap: 0.8rem;
+			margin-top: 1rem;
+			flex-wrap: wrap;
+		}
+
+		.btn-small {
+			padding: 0.55rem 1rem;
+			border: 1px solid var(--border);
+			background: var(--panel-strong);
+			border-radius: 16px;
+			cursor: pointer;
+			font-weight: 700;
+			font-size: 0.9rem;
+			transition: all 160ms ease;
+			color: var(--text);
+		}
+
+		.btn-small:hover {
+			background: rgba(13, 148, 136, 0.15);
+		}
+
+		.btn-small.save {
+			background: rgba(245, 158, 11, 0.15);
+			border-color: rgba(245, 158, 11, 0.3);
+		}
+
+		.notes-section {
+			background: rgba(255, 255, 255, 0.08);
+			padding: 1rem;
+			border-radius: 16px;
+			margin-top: 1rem;
+		}
+
+		.notes-section textarea {
+			width: 100%;
+			padding: 0.8rem 1rem;
+			border: 1px solid var(--border);
+			border-radius: 12px;
+			background: rgba(255, 255, 255, 0.05);
+			color: var(--text);
+			font-size: 0.9rem;
+			min-height: 4rem;
+			resize: vertical;
+		}
+
+		.notes-section textarea:focus {
+			outline: none;
+			box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.2);
+		}
+
+		.right-panel {
+			background: var(--panel);
+			border: 1px solid var(--border);
+			border-radius: 20px;
+			padding: 1.2rem;
+			box-shadow: var(--shadow);
+			height: fit-content;
+		}
+
+		.right-panel h3 {
+			margin: 0 0 1rem;
+			font-size: 1rem;
+		}
+
+		.bookmarks-list {
+			display: flex;
+			flex-direction: column;
+			gap: 0.8rem;
+		}
+
+		.bookmark-item {
+			padding: 0.8rem;
+			background: rgba(255, 255, 255, 0.08);
+			border-radius: 12px;
+			cursor: pointer;
+			border: 1px solid var(--border);
+			transition: all 160ms ease;
+			color: var(--text);
+		}
+
+		.bookmark-item:hover {
+			background: rgba(13, 148, 136, 0.15);
+		}
+
+		.empty-state {
+			padding: 1.5rem;
+			text-align: center;
+			color: var(--muted);
+			border-radius: 16px;
+			border: 1px dashed var(--border);
+		}
+
+		@media (max-width: 1200px) {
+			.container {
+				grid-template-columns: 1fr;
+			}
+		}
+
+		@media (max-width: 768px) {
+			.header {
+				flex-direction: column;
+				align-items: stretch;
+				gap: 1rem;
+			}
+
+			.header-left, .header-right {
+				width: 100%;
+			}
+
+			.header-right {
+				justify-content: space-between;
+			}
+
+			.hero h2 {
+				font-size: 1.8rem;
+			}
+
+			.hero {
+				padding: 1.5rem;
+			}
+
+			.verse-arabic {
+				font-size: 1.3rem;
+			}
+		}
+	</style>
+</head>
+<body>
+	<header class="header">
+		<div class="header-left">
+			<div class="logo">QA</div>
+			<div class="logo-text">
+				<h1>Quran Audio</h1>
+				<p>Complete reading & listening</p>
+			</div>
+		</div>
+		<div class="header-right">
+			<button class="btn" id="themeBtn">Theme</button>
+			<button class="btn" id="allSurahBtn">All Surahs</button>
+		</div>
+	</header>
+
+	<section class="hero">
+		<h2 id="surahTitle">Surah An-Nas</h2>
+		<div class="hero-ar" lang="ar">الناس</div>
+		<p>The last chapter of the Quran with complete translation. Listen or read verses one by one.</p>
+		<div class="hero-btns">
+			<button class="btn btn-primary" id="playAllBtn">▶ Play Full Surah</button>
+			<button class="btn btn-primary" id="playVersesBtn">▶ Play Verse by Verse</button>
+		</div>
+	</section>
+
+	<div class="container">
+		<aside class="sidebar">
+			<h3>Chapter</h3>
+			<div class="input-group">
+				<label for="surahNum">Surah Number (1-114)</label>
+				<input type="number" id="surahNum" min="1" max="114" value="114">
+			</div>
+
+			<h3 style="margin-top: 1.5rem;">Search</h3>
+			<div class="input-group">
+				<input type="search" id="verseSearch" placeholder="Find a verse...">
+			</div>
+
+			<h3 style="margin-top: 1.5rem;">Display</h3>
+			<div class="toggle-group">
+				<button class="toggle-btn active" id="translationToggle">Translation: ON</button>
+				<button class="toggle-btn active" id="autoPlayToggle">Auto-play next: ON</button>
+			</div>
+		</aside>
+
+		<main class="reader" id="reader">
+			<div class="reader-header">
+				<h2 id="readerTitle">Surah An-Nas الناس</h2>
+				<p id="surahMeaning">The People · 6 verses</p>
+			</div>
+			<div id="versesContainer"></div>
+		</main>
+
+		<aside class="right-panel">
+			<h3>Saved Verses</h3>
+			<div id="bookmarksList" class="bookmarks-list">
+				<div class="empty-state">No bookmarks yet. Click "Save" on any verse.</div>
+			</div>
+		</aside>
+	</div>
+
+	<div id="surahModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(8px); z-index:100; padding:1rem; align-items:center; justify-content:center;">
+		<div style="background:var(--panel); border:1px solid var(--border); border-radius:28px; width:100%; max-width:600px; max-height:80vh; display:flex; flex-direction:column;">
+			<div style="padding:1.5rem; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
+				<h2 style="margin:0;">All 114 Surahs</h2>
+				<button class="btn" id="closeModal">✕</button>
+			</div>
+			<input type="search" id="surahSearch" placeholder="Search surahs..." style="margin:1rem; padding:0.8rem 1rem; border:1px solid var(--border); border-radius:16px; background:rgba(255,255,255,0.05); color:var(--text);">
+			<div id="surahList" style="overflow-y:auto; flex:1; padding:0 1rem;"></div>
+		</div>
+	</div>
+
+	<audio id="audioPlayer"></audio>
+
+	<script>
+		const state = {
+			surahNumber: 114,
+			verses: [],
+			currentVerseIndex: 0,
+			isPlaying: false,
+			showTranslation: true,
+			autoPlayNext: true,
+			bookmarks: new Set(JSON.parse(localStorage.getItem('bookmarks') || '[]')),
+			notes: JSON.parse(localStorage.getItem('notes') || '{}'),
+			isDarkTheme: localStorage.getItem('isDarkTheme') === 'true'
+		};
+
+		const surahData = {
+			1: { name: "Al-Fatiha", ar: "الفاتحة", meaning: "The Opening", verses: 7 },
+			2: { name: "Al-Baqarah", ar: "البقرة", meaning: "The Cow", verses: 286 },
+			3: { name: "Ali Imran", ar: "آل عمران", meaning: "The Family of Imran", verses: 200 },
+			4: { name: "An-Nisa", ar: "النساء", meaning: "The Women", verses: 176 },
+			5: { name: "Al-Maida", ar: "المائدة", meaning: "The Table", verses: 120 },
+			6: { name: "Al-Anam", ar: "الأنعام", meaning: "The Cattle", verses: 165 },
+			7: { name: "Al-Araf", ar: "الأعراف", meaning: "The Heights", verses: 206 },
+			8: { name: "Al-Anfal", ar: "الأنفال", meaning: "The Spoils of War", verses: 75 },
+			9: { name: "At-Tawbah", ar: "التوبة", meaning: "The Repentance", verses: 129 },
+			10: { name: "Yunus", ar: "يونس", meaning: "Jonah", verses: 109 },
+			11: { name: "Hud", ar: "هود", meaning: "Hud", verses: 123 },
+			12: { name: "Yusuf", ar: "يوسف", meaning: "Joseph", verses: 111 },
+			13: { name: "Ar-Rad", ar: "الرعد", meaning: "The Thunder", verses: 43 },
+			14: { name: "Ibrahim", ar: "إبراهيم", meaning: "Abraham", verses: 52 },
+			15: { name: "Al-Hijr", ar: "الحجر", meaning: "The Rocky Tract", verses: 99 },
+			16: { name: "An-Nahl", ar: "النحل", meaning: "The Bees", verses: 128 },
+			17: { name: "Al-Isra", ar: "الإسراء", meaning: "The Night Journey", verses: 111 },
+			18: { name: "Al-Kahf", ar: "الكهف", meaning: "The Cave", verses: 110 },
+			19: { name: "Maryam", ar: "مريم", meaning: "Mary", verses: 98 },
+			20: { name: "Taha", ar: "طه", meaning: "Taha", verses: 135 },
+			21: { name: "Al-Anbiya", ar: "الأنبياء", meaning: "The Prophets", verses: 112 },
+			22: { name: "Al-Hajj", ar: "الحج", meaning: "The Pilgrimage", verses: 78 },
+			23: { name: "Al-Muminun", ar: "المؤمنون", meaning: "The Believers", verses: 118 },
+			24: { name: "An-Nur", ar: "النور", meaning: "The Light", verses: 64 },
+			25: { name: "Al-Furqan", ar: "الفرقان", meaning: "The Criterion", verses: 77 },
+			26: { name: "Ash-Shuara", ar: "الشعراء", meaning: "The Poets", verses: 227 },
+			27: { name: "An-Naml", ar: "النمل", meaning: "The Ants", verses: 93 },
+			28: { name: "Al-Qasas", ar: "القصص", meaning: "The Stories", verses: 88 },
+			29: { name: "Al-Ankabut", ar: "العنكبوت", meaning: "The Spider", verses: 69 },
+			30: { name: "Ar-Rum", ar: "الروم", meaning: "The Romans", verses: 60 },
+			31: { name: "Luqman", ar: "لقمان", meaning: "Luqman", verses: 34 },
+			32: { name: "As-Sajdah", ar: "السجدة", meaning: "The Prostration", verses: 30 },
+			33: { name: "Al-Ahzab", ar: "الأحزاب", meaning: "The Confederates", verses: 73 },
+			34: { name: "Saba", ar: "سبأ", meaning: "Sheba", verses: 54 },
+			35: { name: "Fatir", ar: "فاطر", meaning: "The Originator", verses: 45 },
+			36: { name: "Ya-Sin", ar: "يس", meaning: "Ya-Sin", verses: 83 },
+			37: { name: "As-Saffat", ar: "الصافات", meaning: "The Arrangers", verses: 182 },
+			38: { name: "Sad", ar: "ص", meaning: "Sad", verses: 88 },
+			39: { name: "Az-Zumar", ar: "الزمر", meaning: "The Troops", verses: 75 },
+			40: { name: "Ghafir", ar: "غافر", meaning: "The Forgiver", verses: 85 },
+			41: { name: "Fussilat", ar: "فصلت", meaning: "Explained in Detail", verses: 54 },
+			42: { name: "Ash-Shura", ar: "الشورى", meaning: "The Consultation", verses: 53 },
+			43: { name: "Az-Zukhruf", ar: "الزخرف", meaning: "The Ornaments", verses: 89 },
+			44: { name: "Ad-Dukhan", ar: "الدخان", meaning: "The Smoke", verses: 59 },
+			45: { name: "Al-Jathiyah", ar: "الجاثية", meaning: "The Crouching", verses: 37 },
+			46: { name: "Al-Ahqaf", ar: "الأحقاف", meaning: "The Dunes", verses: 35 },
+			47: { name: "Muhammad", ar: "محمد", meaning: "Muhammad", verses: 38 },
+			48: { name: "Al-Fath", ar: "الفتح", meaning: "The Victory", verses: 29 },
+			49: { name: "Al-Hujurat", ar: "الحجرات", meaning: "The Chambers", verses: 18 },
+			50: { name: "Qaf", ar: "ق", meaning: "Qaf", verses: 45 },
+			51: { name: "Adh-Dhariyat", ar: "الذاريات", meaning: "The Scatterers", verses: 60 },
+			52: { name: "At-Tur", ar: "الطور", meaning: "The Mount", verses: 49 },
+			53: { name: "An-Najm", ar: "النجم", meaning: "The Star", verses: 62 },
+			54: { name: "Al-Qamar", ar: "القمر", meaning: "The Moon", verses: 55 },
+			55: { name: "Ar-Rahman", ar: "الرحمن", meaning: "The Most Merciful", verses: 78 },
+			56: { name: "Al-Waqi", ar: "الواقعة", meaning: "The Inevitable", verses: 96 },
+			57: { name: "Al-Hadid", ar: "الحديد", meaning: "The Iron", verses: 29 },
+			58: { name: "Al-Mujadila", ar: "المجادلة", meaning: "The Pleading Woman", verses: 22 },
+			59: { name: "Al-Hashr", ar: "الحشر", meaning: "The Exile", verses: 24 },
+			60: { name: "Al-Mumtahina", ar: "الممتحنة", meaning: "The Woman to be Examined", verses: 13 },
+			61: { name: "As-Saff", ar: "الصف", meaning: "The Battle Array", verses: 14 },
+			62: { name: "Al-Jumua", ar: "الجمعة", meaning: "Friday", verses: 11 },
+			63: { name: "Al-Munafiqun", ar: "المنافقون", meaning: "The Hypocrites", verses: 11 },
+			64: { name: "At-Taghabun", ar: "التغابن", meaning: "The Mutual Loss", verses: 18 },
+			65: { name: "At-Talaq", ar: "الطلاق", meaning: "The Divorce", verses: 12 },
+			66: { name: "At-Tahrim", ar: "التحريم", meaning: "The Prohibition", verses: 12 },
+			67: { name: "Al-Mulk", ar: "الملك", meaning: "The Dominion", verses: 30 },
+			68: { name: "Al-Qalam", ar: "القلم", meaning: "The Pen", verses: 52 },
+			69: { name: "Al-Haqqah", ar: "الحاقة", meaning: "The Inevitable Reality", verses: 52 },
+			70: { name: "Al-Maarij", ar: "المعارج", meaning: "The Ascending Stairways", verses: 44 },
+			71: { name: "Nuh", ar: "نوح", meaning: "Noah", verses: 28 },
+			72: { name: "Al-Jinn", ar: "الجن", meaning: "The Jinn", verses: 28 },
+			73: { name: "Al-Muzzammil", ar: "المزمل", meaning: "The Enfolded One", verses: 20 },
+			74: { name: "Al-Muddaththir", ar: "المدثر", meaning: "The Cloaked One", verses: 56 },
+			75: { name: "Al-Qiyamah", ar: "القيامة", meaning: "The Resurrection", verses: 40 },
+			76: { name: "Al-Insan", ar: "الإنسان", meaning: "The Man", verses: 31 },
+			77: { name: "Al-Mursalat", ar: "المرسلات", meaning: "The Sent Forth", verses: 50 },
+			78: { name: "An-Naba", ar: "النبأ", meaning: "The News", verses: 40 },
+			79: { name: "An-Naziat", ar: "النازعات", meaning: "The Snatchers", verses: 46 },
+			80: { name: "Abasa", ar: "عبس", meaning: "He Frowned", verses: 42 },
+			81: { name: "At-Takwir", ar: "التكوير", meaning: "The Darkening", verses: 29 },
+			82: { name: "Al-Infitar", ar: "الانفطار", meaning: "The Cleaving", verses: 19 },
+			83: { name: "Al-Mutaffifin", ar: "المطففين", meaning: "The Cheaters", verses: 36 },
+			84: { name: "Al-Inshiqaq", ar: "الانشقاق", meaning: "The Splitting", verses: 25 },
+			85: { name: "Al-Buruj", ar: "البروج", meaning: "The Constellations", verses: 22 },
+			86: { name: "At-Tariq", ar: "الطارق", meaning: "The Night Comer", verses: 17 },
+			87: { name: "Al-Alaa", ar: "الأعلى", meaning: "The Most High", verses: 19 },
+			88: { name: "Al-Ghashiyah", ar: "الغاشية", meaning: "The Overwhelming", verses: 26 },
+			89: { name: "Al-Fajr", ar: "الفجر", meaning: "The Dawn", verses: 30 },
+			90: { name: "Al-Balad", ar: "البلد", meaning: "The City", verses: 20 },
+			91: { name: "Ash-Shams", ar: "الشمس", meaning: "The Sun", verses: 15 },
+			92: { name: "Al-Layl", ar: "الليل", meaning: "The Night", verses: 21 },
+			93: { name: "Ad-Duhaa", ar: "الضحى", meaning: "The Morning Light", verses: 11 },
+			94: { name: "Ash-Sharh", ar: "الشرح", meaning: "The Opening Up", verses: 8 },
+			95: { name: "At-Tin", ar: "التين", meaning: "The Fig", verses: 8 },
+			96: { name: "Al-Alaq", ar: "العلق", meaning: "The Clot", verses: 19 },
+			97: { name: "Al-Qadr", ar: "القدر", meaning: "The Power", verses: 5 },
+			98: { name: "Al-Bayyinah", ar: "البينة", meaning: "The Clear Proof", verses: 8 },
+			99: { name: "Az-Zalzalah", ar: "الزلزلة", meaning: "The Earthquake", verses: 8 },
+			100: { name: "Al-Adiyat", ar: "العاديات", meaning: "The Runners", verses: 11 },
+			101: { name: "Al-Qariah", ar: "القارعة", meaning: "The Calamity", verses: 11 },
+			102: { name: "At-Takathur", ar: "التكاثر", meaning: "The Rivalry", verses: 8 },
+			103: { name: "Al-Asr", ar: "العصر", meaning: "The Time", verses: 3 },
+			104: { name: "Al-Humazah", ar: "الهمزة", meaning: "The Slanderer", verses: 9 },
+			105: { name: "Al-Fil", ar: "الفيل", meaning: "The Elephant", verses: 5 },
+			106: { name: "Quraysh", ar: "قريش", meaning: "Quraysh", verses: 4 },
+			107: { name: "Al-Maun", ar: "الماعون", meaning: "The Small Kindnesses", verses: 7 },
+			108: { name: "Al-Kawthar", ar: "الكوثر", meaning: "The Abundance", verses: 3 },
+			109: { name: "Al-Kafirun", ar: "الكافرون", meaning: "The Disbelievers", verses: 6 },
+			110: { name: "An-Nasr", ar: "النصر", meaning: "The Help", verses: 3 },
+			111: { name: "Al-Masad", ar: "المسد", meaning: "The Palm Fiber", verses: 5 },
+			112: { name: "Al-Ikhlas", ar: "الإخلاص", meaning: "The Sincerity", verses: 4 },
+			113: { name: "Al-Falaq", ar: "الفلق", meaning: "The Daybreak", verses: 5 },
+			114: { name: "An-Nas", ar: "الناس", meaning: "The People", verses: 6 }
+		};
+
+		const audioPlayer = document.getElementById('audioPlayer');
+
+		async function loadSurah(num) {
+			state.surahNumber = num;
+			document.getElementById('surahNum').value = num;
+			const info = surahData[num];
+			document.getElementById('surahTitle').textContent = `Surah ${info.name}`;
+			document.getElementById('readerTitle').textContent = `Surah ${info.name} ${info.ar}`;
+			document.getElementById('surahMeaning').textContent = `${info.meaning} · ${info.verses} verses`;
+
+			try {
+				const res = await fetch(`https://api.alquran.cloud/v1/surah/${num}/ar.mahermuaiqly`);
+				const data = await res.json();
+				state.verses = data.data.ayahs;
+				renderVerses();
+			} catch (e) {
+				document.getElementById('versesContainer').innerHTML = '<div class="empty-state">Error loading surah. Please try again.</div>';
+			}
+		}
+
+		function renderVerses() {
+			const container = document.getElementById('versesContainer');
+			const query = document.getElementById('verseSearch').value.toLowerCase();
+			const filtered = state.verses.filter(v => !query || v.text.includes(query) || v.numberInSurah.toString().includes(query));
+
+			container.innerHTML = filtered.map((verse, idx) => `
+				<div class="verse" data-verse="${verse.numberInSurah}">
+					<div class="verse-number">Verse ${verse.numberInSurah}</div>
+					<div class="verse-arabic" lang="ar">${verse.text}</div>
+					${state.showTranslation ? `<div class="verse-translation">${verse.translation || 'Translation not available'}</div>` : ''}
+					<div class="verse-controls">
+						<button class="btn-small" onclick="playVerse(${verse.numberInSurah})">▶ Play</button>
+						<button class="btn-small ${state.bookmarks.has(verse.numberInSurah) ? 'save' : ''}" onclick="toggleBookmark(${verse.numberInSurah})">★ ${state.bookmarks.has(verse.numberInSurah) ? 'Saved' : 'Save'}</button>
+					</div>
+					<div class="notes-section">
+						<textarea data-verse="${verse.numberInSurah}" placeholder="Add a note...">${state.notes[verse.numberInSurah] || ''}</textarea>
+					</div>
+				</div>
+			`).join('');
+
+			document.querySelectorAll('.notes-section textarea').forEach(ta => {
+				ta.addEventListener('input', (e) => {
+					state.notes[e.target.dataset.verse] = e.target.value;
+					localStorage.setItem('notes', JSON.stringify(state.notes));
+				});
+			});
+		}
+
+		function playVerse(verseNum) {
+			const verse = state.verses.find(v => v.numberInSurah === verseNum);
+			if (verse && verse.audio) {
+				audioPlayer.src = verse.audio;
+				audioPlayer.play();
+			}
+		}
+
+		function playAllVerses() {
+			state.currentVerseIndex = 0;
+			playNextVerse();
+		}
+
+		function playNextVerse() {
+			if (state.currentVerseIndex >= state.verses.length) return;
+			const verse = state.verses[state.currentVerseIndex];
+			audioPlayer.src = verse.audio;
+			audioPlayer.play();
+			state.currentVerseIndex++;
+		}
+
+		function toggleBookmark(verseNum) {
+			if (state.bookmarks.has(verseNum)) {
+				state.bookmarks.delete(verseNum);
+			} else {
+				state.bookmarks.add(verseNum);
+			}
+			localStorage.setItem('bookmarks', JSON.stringify([...state.bookmarks]));
+			renderVerses();
+			updateBookmarks();
+		}
+
+		function updateBookmarks() {
+			const list = document.getElementById('bookmarksList');
+			if (state.bookmarks.size === 0) {
+				list.innerHTML = '<div class="empty-state">No bookmarks yet.</div>';
+				return;
+			}
+			list.innerHTML = [...state.bookmarks].sort((a, b) => a - b).map(v => `
+				<div class="bookmark-item" onclick="document.querySelector('[data-verse=\\"${v}\\"]').scrollIntoView({behavior: 'smooth'})">
+					Verse ${v}
+				</div>
+			`).join('');
+		}
+
+		function renderSurahList() {
+			const container = document.getElementById('surahList');
+			const query = document.getElementById('surahSearch').value.toLowerCase();
+			const filtered = Object.entries(surahData).filter(([n, i]) => 
+				n.includes(query) || i.name.toLowerCase().includes(query) || i.meaning.toLowerCase().includes(query)
+			);
+
+			container.innerHTML = filtered.map(([n, i]) => `
+				<div style="padding:0.8rem; border-bottom:1px solid var(--border); cursor:pointer;" onclick="loadSurah(${n}); document.getElementById('surahModal').style.display='none';">
+					<strong>${n}. ${i.name}</strong> <span lang="ar" style="float:right;">${i.ar}</span>
+					<div style="color:var(--muted); font-size:0.85rem;">${i.meaning}</div>
+				</div>
+			`).join('');
+		}
+
+		document.getElementById('themeBtn').addEventListener('click', () => {
+			state.isDarkTheme = !state.isDarkTheme;
+			document.body.classList.toggle('theme-dark');
+			localStorage.setItem('isDarkTheme', state.isDarkTheme);
+		});
+
+		document.getElementById('allSurahBtn').addEventListener('click', () => {
+			document.getElementById('surahModal').style.display = 'flex';
+			renderSurahList();
+		});
+
+		document.getElementById('closeModal').addEventListener('click', () => {
+			document.getElementById('surahModal').style.display = 'none';
+		});
+
+		document.getElementById('surahNum').addEventListener('change', (e) => {
+			loadSurah(parseInt(e.target.value));
+		});
+
+		document.getElementById('verseSearch').addEventListener('input', renderVerses);
+
+		document.getElementById('translationToggle').addEventListener('click', (e) => {
+			state.showTranslation = !state.showTranslation;
+			e.target.textContent = `Translation: ${state.showTranslation ? 'ON' : 'OFF'}`;
+			e.target.classList.toggle('active');
+			renderVerses();
+		});
+
+		document.getElementById('autoPlayToggle').addEventListener('click', (e) => {
+			state.autoPlayNext = !state.autoPlayNext;
+			e.target.textContent = `Auto-play next: ${state.autoPlayNext ? 'ON' : 'OFF'}`;
+			e.target.classList.toggle('active');
+		});
+
+		document.getElementById('playAllBtn').addEventListener('click', playAllVerses);
+		document.getElementById('playVersesBtn').addEventListener('click', () => {
+			state.currentVerseIndex = 0;
+			playNextVerse();
+		});
+
+		document.getElementById('surahSearch').addEventListener('input', renderSurahList);
+
+		audioPlayer.addEventListener('ended', () => {
+			if (state.autoPlayNext) playNextVerse();
+		});
+
+		if (state.isDarkTheme) document.body.classList.add('theme-dark');
+		loadSurah(114);
+		updateBookmarks();
+	</script>
+</body>
+</html>
